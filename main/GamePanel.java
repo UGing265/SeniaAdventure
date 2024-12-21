@@ -1,4 +1,5 @@
 package main;
+
 import javax.swing.JPanel;
 
 import entity.Player;
@@ -11,32 +12,35 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 public class GamePanel extends JPanel implements Runnable {
-    //SCREEN SETTINGS
+    // SCREEN SETTINGS
     final int orginalTileSize = 16;
     final int scale = 4;
 
-    public int tileSize = orginalTileSize * scale ;// 1 tile scale to big screen 
+    public int tileSize = orginalTileSize * scale;// 1 tile scale to big screen
     public int maxScreenCol = 16;
     public int maxScreenRow = 12;
     public int screenWidth = tileSize * maxScreenCol;
     public int screenHeight = tileSize * maxScreenRow;
 
-    //WORLD SETTINGS
+    // WORLD SETTINGS
     public final int maxWorldCol = 50;
     public final int maxWorldRow = 50;
-    public final int worldWidth = tileSize * maxWorldCol;
+    public final int worldWidth = tileSize * maxWorldCol; // u can use if u want or remove
     public final int worldHeight = tileSize * maxWorldRow;
 
     // FPS
     int FPS = 60;
 
     TileManager tileM = new TileManager(this);
-    KeyHandler keyH = new KeyHandler(this);
-    Thread gameThread;
+    KeyHandler keyH = new KeyHandler();
+    Sound sound = new Sound();
     public CollisionChecker cChecker = new CollisionChecker(this);
     public AssetSetter aSetter = new AssetSetter(this);
-    public Player player = new Player(this,keyH);
-    public SuperObject obj[] = new SuperObject[10]; //10 objects slots
+    Thread gameThread;
+
+    // ENTITY AND OBJECT
+    public Player player = new Player(this, keyH);
+    public SuperObject obj[] = new SuperObject[10]; // 10 objects slots
 
     // Set player's default position delete because it redency
     // int playerX = 100;
@@ -52,26 +56,28 @@ public class GamePanel extends JPanel implements Runnable {
 
     }
     // public void zoomInOut(int i){
-    //     int oldWorldWidth = tileSize * maxWorldCol;
-    //     tileSize += i;
-    //     int newWorldWidth = tileSize * maxWorldCol;
+    // int oldWorldWidth = tileSize * maxWorldCol;
+    // tileSize += i;
+    // int newWorldWidth = tileSize * maxWorldCol;
 
-    //     double multiplier = (double)newWorldWidth/oldWorldWidth;
-        
-    //     System.out.println("tileSize: "+ tileSize);
-    //     System.out.println("WorldWidth: "+newWorldWidth);
-    //     System.out.println("player worldX: "+player.worldX);
+    // double multiplier = (double)newWorldWidth/oldWorldWidth;
 
-    //     double newPlayerWorldX = player.worldX * multiplier;
-    //     double newPlayerWorldY = player.worldY * multiplier;
+    // System.out.println("tileSize: "+ tileSize);
+    // System.out.println("WorldWidth: "+newWorldWidth);
+    // System.out.println("player worldX: "+player.worldX);
 
-    //     player.worldX = newPlayerWorldX;
-    //     player.worldY = newPlayerWorldY;
+    // double newPlayerWorldX = player.worldX * multiplier;
+    // double newPlayerWorldY = player.worldY * multiplier;
+
+    // player.worldX = newPlayerWorldX;
+    // player.worldY = newPlayerWorldY;
     // }
 
-    public void setupGame(){
+    public void setupGame() {
 
         aSetter.setObject();
+
+        playMusic(0);
     }
 
     public void startGameThread() {
@@ -121,13 +127,13 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-        
+
         // TILE
         tileM.draw(g2);
 
         // OBJECT
-        for(int i = 0; i < obj.length; i++){
-            if(obj[i] != null){
+        for (int i = 0; i < obj.length; i++) {
+            if (obj[i] != null) {
                 obj[i].draw(g2, this);
             }
         }
@@ -136,5 +142,22 @@ public class GamePanel extends JPanel implements Runnable {
         player.draw(g2);
 
         g2.dispose();
+    }
+
+    public void playMusic(int i) {
+
+        sound.setFile(i);
+        sound.play();
+        sound.loop();
+    }
+
+    public void stopMusic() {
+        sound.stop();
+    }
+
+    public void playSE(int i) {
+
+        sound.setFile(i);
+        sound.play();
     }
 }

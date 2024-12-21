@@ -8,12 +8,13 @@ import javax.imageio.ImageIO;
 public class OBJ_Key extends SuperObject{
     public OBJ_Key(){
 
-        name = "key";
+        name = "Key";
         try{
             image = ImageIO.read(getClass().getResourceAsStream("/res/Object/key.png"));
 
         }catch(IOException e){
             e.printStackTrace();
         }
+        //solidArea.x = 5 DONT USE because if we have a lot object we will tied
     }
 }

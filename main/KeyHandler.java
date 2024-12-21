@@ -7,8 +7,8 @@ public class KeyHandler implements KeyListener {
     public boolean upPressed, downPressed, leftPressed, rightPressed;
     GamePanel gp;
 
-    public KeyHandler(GamePanel gp){
-        this.gp = gp;
+    public KeyHandler(){
+       // this.gp = gp;
     }
 
     @Override

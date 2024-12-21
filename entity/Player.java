@@ -18,6 +18,7 @@ public class Player extends Entity {
 
     public final int screenX;// imagine it's camera view
     public final int screenY;// final because DONT CHANGE
+    int hasKey = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -31,6 +32,8 @@ public class Player extends Entity {
         // solidArea.y = 0;
         // solidArea.width = 48; if give empty object like Rectangle();
         // solidArea.height = 48; with and height mean hitbox
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         setDefaultValues();
         getPlayerImage();
@@ -84,6 +87,10 @@ public class Player extends Entity {
             collisionOn = false;
             gp.cChecker.checkTile(this);
 
+            // CHECK OBJECT COLLISON
+            int objIndex = gp.cChecker.checkObject(this, true);
+            pickUpObject(objIndex);
+
             // IF COLISION IS FALSE, PLAYER CAN MOVE
             if (collisionOn == false) {
                 switch (direction) {
@@ -112,6 +119,38 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }
+        }
+    }
+
+    public void pickUpObject(int i) {
+        // mean not touch any object Key
+        if (i != 999) {
+
+            String objectName = gp.obj[i].name;
+
+            switch (objectName) {
+                case "Key":
+                    gp.playSE(1);
+                    hasKey++;
+                    gp.obj[i] = null; // remove object
+                    System.out.println("Key:" + hasKey);
+                    break;
+                case "Door":
+                    if (hasKey > 0) {
+                        gp.playSE(3);
+                        gp.obj[i] = null;
+                        hasKey--;
+                    }
+                    System.out.println("Key:" + hasKey);
+                    break;
+                case "Boots":
+                    gp.playSE(2);
+                    speed += 10;
+                    gp.obj[i] = null;
+                    break;
+
+            }
+
         }
     }
 
@@ -167,6 +206,6 @@ public class Player extends Entity {
                 break;
 
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize+10, gp.tileSize+10, null);
+        g2.drawImage(image, screenX, screenY, gp.tileSize + 10, gp.tileSize + 10, null);
     }
 }
