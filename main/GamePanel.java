@@ -34,6 +34,7 @@ public class GamePanel extends JPanel implements Runnable {
     KeyHandler keyH = new KeyHandler(this);
     Thread gameThread;
     public CollisionChecker cChecker = new CollisionChecker(this);
+    public AssetSetter aSetter = new AssetSetter(this);
     public Player player = new Player(this,keyH);
     public SuperObject obj[] = new SuperObject[10]; //10 objects slots
 
@@ -67,6 +68,11 @@ public class GamePanel extends JPanel implements Runnable {
     //     player.worldX = newPlayerWorldX;
     //     player.worldY = newPlayerWorldY;
     // }
+
+    public void setupGame(){
+
+        aSetter.setObject();
+    }
 
     public void startGameThread() {
         gameThread = new Thread(this);
@@ -115,9 +121,18 @@ public class GamePanel extends JPanel implements Runnable {
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
-
+        
+        // TILE
         tileM.draw(g2);
 
+        // OBJECT
+        for(int i = 0; i < obj.length; i++){
+            if(obj[i] != null){
+                obj[i].draw(g2, this);
+            }
+        }
+
+        // PLAYER
         player.draw(g2);
 
         g2.dispose();

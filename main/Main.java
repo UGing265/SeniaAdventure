@@ -22,7 +22,7 @@ public class Main{
 
         gamePanel.startGameThread();
 
-
+        gamePanel.setupGame();
         System.out.println();  
     }
 }
