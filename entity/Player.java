@@ -1,5 +1,6 @@
 package entity;
 
+import java.awt.Color;
 //import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -18,7 +19,8 @@ public class Player extends Entity {
 
     public final int screenX;// imagine it's camera view
     public final int screenY;// final because DONT CHANGE
-    int hasKey = 0;
+    public int hasKey = 0;
+    int standCounter = 0;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -119,11 +121,17 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }
+        }else{
+            standCounter++;
+            if(standCounter == 20){
+                spriteNum = 2; //stop walk :)
+                standCounter = 0;
+            }       
         }
     }
 
     public void pickUpObject(int i) {
-        // mean not touch any object Key
+        // i != 999 mean not touch any object Key
         if (i != 999) {
 
             String objectName = gp.obj[i].name;
@@ -133,28 +141,38 @@ public class Player extends Entity {
                     gp.playSE(1);
                     hasKey++;
                     gp.obj[i] = null; // remove object
-                    System.out.println("Key:" + hasKey);
+                    gp.ui.showMessage("You got a key!");
+                    // System.out.println("Key:" + hasKey);
                     break;
                 case "Door":
                     if (hasKey > 0) {
                         gp.playSE(3);
                         gp.obj[i] = null;
                         hasKey--;
+                        gp.ui.showMessage("You opened the door!");
+                    } else {
+                        gp.ui.showMessage("You need a key!");
                     }
-                    System.out.println("Key:" + hasKey);
+                    // System.out.println("Key:" + hasKey);
                     break;
                 case "Boots":
                     gp.playSE(2);
                     speed += 10;
                     gp.obj[i] = null;
+                    gp.ui.showMessage("Speed up!");
                     break;
-
+                case "Chest":
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(4);
+                    break;
             }
 
         }
     }
 
     public void draw(Graphics2D g2) {
+        System.out.format("\nX: %d -  Y: %d", worldX, worldY);
         // g2.setColor(Color.white);
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
         BufferedImage image = null;
@@ -207,5 +225,8 @@ public class Player extends Entity {
 
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize + 10, gp.tileSize + 10, null);
+        //g2.setColor((Color.red));
+        //g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width, solidArea.height);
+        //troubleshoot collision Rectangles
     }
 }

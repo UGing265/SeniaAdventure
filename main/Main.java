@@ -2,6 +2,8 @@ package main;
 
 import javax.swing.JFrame;
 
+import entity.Entity;
+
 
 
 public class Main{
@@ -16,7 +18,6 @@ public class Main{
         window.add(gamePanel);
         
         window.pack();
-
         window.setLocationRelativeTo(null);
         window.setVisible(true);
 
