@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.Color;
 //import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -21,6 +20,7 @@ public class Player extends Entity {
     public final int screenY;// final because DONT CHANGE
     public int hasKey = 0;
     int standCounter = 0;
+    int Cooldown = 999999;
 
     public Player(GamePanel gp, KeyHandler keyH) {
         this.gp = gp;
@@ -72,6 +72,13 @@ public class Player extends Entity {
     }
 
     public void update() {
+
+        // COOLDOWN 10s when use boots
+        if((int) gp.ui.playTime == Cooldown )  {
+            speed = 4;
+            gp.ui.showMessage("Slow down!");
+        }
+
         if (keyH.upPressed == true || keyH.downPressed == true
                 || keyH.leftPressed == true || keyH.rightPressed == true) {
 
@@ -160,6 +167,7 @@ public class Player extends Entity {
                     speed += 10;
                     gp.obj[i] = null;
                     gp.ui.showMessage("Speed up!");
+                    Cooldown =(int) gp.ui.playTime + 10;
                     break;
                 case "Chest":
                     gp.ui.gameFinished = true;
@@ -172,7 +180,7 @@ public class Player extends Entity {
     }
 
     public void draw(Graphics2D g2) {
-        System.out.format("\nX: %d -  Y: %d", worldX, worldY);
+        //System.out.format("\nX: %d -  Y: %d", worldX, worldY);
         // g2.setColor(Color.white);
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
         BufferedImage image = null;

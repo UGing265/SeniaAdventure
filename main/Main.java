@@ -2,10 +2,6 @@ package main;
 
 import javax.swing.JFrame;
 
-import entity.Entity;
-
-
-
 public class Main{
     public static void main(String[] args){
     
