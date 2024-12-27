@@ -4,26 +4,21 @@ package entity;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
-//import java.nio.Buffer;
-
-import javax.imageio.ImageIO;
 
 import main.GamePanel;
 import main.KeyHandler;
 
 public class Player extends Entity {
-    GamePanel gp;
     KeyHandler keyH;
 
     public final int screenX;// imagine it's camera view
     public final int screenY;// final because DONT CHANGE
-    public int hasKey = 0;
+    public int hasKey = 0;// dele
     int standCounter = 0;
     int Cooldown = 999999;
 
     public Player(GamePanel gp, KeyHandler keyH) {
-        this.gp = gp;
+        super(gp);
         this.keyH = keyH;
 
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2); // make sure in center screen
@@ -50,31 +45,26 @@ public class Player extends Entity {
     }
 
     public void getPlayerImage() {
-        try {
-            up1 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_37 up.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_38 up.png"));
-            up3 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_39 up.png"));
 
-            down1 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_01 down.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_02 down.png"));
-            down3 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_03 down.png"));
+        up1 = setup("/Seina/Layer 1_SEINA_37 up", gp.tileSize + 20, gp.tileSize + 20);
+        up2 = setup("/Seina/Layer 1_SEINA_38 up", gp.tileSize + 20, gp.tileSize + 20);
+        up3 = setup("/Seina/Layer 1_SEINA_39 up", gp.tileSize + 20, gp.tileSize + 20);
+        down1 = setup("/Seina/Layer 1_SEINA_01 down", gp.tileSize + 20, gp.tileSize + 20);
+        down2 = setup("/Seina/Layer 1_SEINA_02 down", gp.tileSize + 20, gp.tileSize + 20);
+        down3 = setup("/Seina/Layer 1_SEINA_03 down", gp.tileSize + 20, gp.tileSize + 20);
+        left1 = setup("/Seina/Layer 1_SEINA_13 left", gp.tileSize + 20, gp.tileSize + 20);
+        left2 = setup("/Seina/Layer 1_SEINA_14 left", gp.tileSize + 20, gp.tileSize + 20);
+        left3 = setup("/Seina/Layer 1_SEINA_15 left", gp.tileSize + 20, gp.tileSize + 20);
+        right1 = setup("/Seina/Layer 1_SEINA_25 right", gp.tileSize + 20, gp.tileSize + 20);
+        right2 = setup("/Seina/Layer 1_SEINA_26 right", gp.tileSize + 20, gp.tileSize + 20);
+        right3 = setup("/Seina/Layer 1_SEINA_27 right", gp.tileSize + 20, gp.tileSize + 20);
 
-            left1 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_13 left.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_14 left.png"));
-            left3 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_15 left.png"));
-
-            right1 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_25 right.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_26 right.png"));
-            right3 = ImageIO.read(getClass().getResourceAsStream("/res/Seina/Layer 1_SEINA_27 right.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public void update() {
 
         // COOLDOWN 10s when use boots
-        if((int) gp.ui.playTime == Cooldown )  {
+        if ((int) gp.ui.playTime == Cooldown) {
             speed = 4;
             gp.ui.showMessage("Slow down!");
         }
@@ -99,6 +89,10 @@ public class Player extends Entity {
             // CHECK OBJECT COLLISON
             int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
+
+            // CHECK NPC COLLISION
+            int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
+            interactNPC(npcIndex);
 
             // IF COLISION IS FALSE, PLAYER CAN MOVE
             if (collisionOn == false) {
@@ -128,18 +122,18 @@ public class Player extends Entity {
                 }
                 spriteCounter = 0;
             }
-        }else{
+        } else {
             standCounter++;
-            if(standCounter == 20){
-                spriteNum = 2; //stop walk :)
+            if (standCounter == 20) {
+                spriteNum = 2; // stop walk :)
                 standCounter = 0;
-            }       
+            }
         }
     }
 
     public void pickUpObject(int i) {
         // i != 999 mean not touch any object Key
-        if (i != 999) {
+        if (i != 999) {// delete below
 
             String objectName = gp.obj[i].name;
 
@@ -167,7 +161,7 @@ public class Player extends Entity {
                     speed += 10;
                     gp.obj[i] = null;
                     gp.ui.showMessage("Speed up!");
-                    Cooldown =(int) gp.ui.playTime + 10;
+                    Cooldown = (int) gp.ui.playTime + 10;
                     break;
                 case "Chest":
                     gp.ui.gameFinished = true;
@@ -179,8 +173,14 @@ public class Player extends Entity {
         }
     }
 
+    public void interactNPC(int i) {
+        if (i != 999) {
+            System.out.println("you are hitting an NPC!");
+        }
+    }
+
     public void draw(Graphics2D g2) {
-        //System.out.format("\nX: %d -  Y: %d", worldX, worldY);
+        // System.out.format("\nX: %d - Y: %d", worldX, worldY);
         // g2.setColor(Color.white);
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
         BufferedImage image = null;
@@ -232,9 +232,49 @@ public class Player extends Entity {
                 break;
 
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize + 10, gp.tileSize + 10, null);
-        //g2.setColor((Color.red));
-        //g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width, solidArea.height);
-        //troubleshoot collision Rectangles
+        g2.drawImage(image, screenX, screenY, null);
+        // g2.setColor((Color.red));
+        // g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width,
+        // solidArea.height);
+        // troubleshoot collision Rectangles
     }
 }
+
+/*
+ * try {
+ * up1 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_37 up.png"));
+ * up2 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_38 up.png"));
+ * up3 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_39 up.png"));
+ * 
+ * down1 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_01 down.png"));
+ * down2 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_02 down.png"));
+ * down3 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_03 down.png"));
+ * 
+ * left1 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_13 left.png"));
+ * left2 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_14 left.png"));
+ * left3 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_15 left.png"));
+ * 
+ * right1 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_25 right.png"));
+ * right2 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_26 right.png"));
+ * right3 = ImageIO.read(getClass().
+ * getResourceAsStream("/res/Seina/Layer 1_SEINA_27 right.png"));
+ * } catch (IOException e) {
+ * e.printStackTrace();
+ * }
+ * 
+ * g2.drawImage(image, screenX, screenY, gp.tileSize + 10, gp.tileSize + 10,
+ * null);
+ * 
+ * 
+ */
