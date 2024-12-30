@@ -24,7 +24,7 @@ public class Player extends Entity {
         screenX = gp.screenWidth / 2 - (gp.tileSize / 2); // make sure in center screen
         screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
-        solidArea = new Rectangle(25, 38, 23, 20);// max: 48 + 10
+        solidArea = new Rectangle(30, 36, 26, 43);// max: 48 + 10
         // solidArea.x = 0; x and y mean distance
         // solidArea.y = 0;
         // solidArea.width = 48; if give empty object like Rectangle();
@@ -175,8 +175,14 @@ public class Player extends Entity {
 
     public void interactNPC(int i) {
         if (i != 999) {
-            System.out.println("you are hitting an NPC!");
+            //System.out.println("you are hitting an NPC!");
+            if(gp.keyH.enterPressed == true){
+                gp.gameState = gp.dialogueState;
+                gp.npc[i].speak();
+            }
+            
         }
+        gp.keyH.enterPressed = false;
     }
 
     public void draw(Graphics2D g2) {

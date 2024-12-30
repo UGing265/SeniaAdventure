@@ -60,8 +60,36 @@ public class redGuys extends Entity {
             }
             actionLockCounter = 0;
         }
+     
+     }
+     public void update() {
 
-        if (spriteCounter > 8) { // speed Animation
+        setAction();
+
+        collisionOn = false;
+        gp.cChecker.checkTile(this);
+        gp.cChecker.checkObject(this, false);
+        gp.cChecker.checkPlayer(this);
+
+        // IF COLISION IS FALSE, PLAYER CAN MOVE
+        if (collisionOn == false) {
+            switch (direction) {
+                case "up":
+                    worldY -= speed;
+                    break;
+                case "down":
+                    worldY += speed;
+                    break;
+                case "left":
+                    worldX -= speed;
+                    break;
+                case "right":
+                    worldX += speed;
+                    break;
+            }
+        }
+        spriteCounter++;
+        if(spriteCounter > 6) { // speed Animation
             if (spriteNum == 1) {
                 spriteNum = 2;
             } else if (spriteNum == 2) {
@@ -71,7 +99,7 @@ public class redGuys extends Entity {
             }
             spriteCounter = 0;
         }
-     }
+    }
 
      public void draw(Graphics2D g2) {
         BufferedImage image = null;
@@ -132,9 +160,9 @@ public class redGuys extends Entity {
 
         }
         g2.drawImage(image, screenX, screenY, null);
-        g2.setColor((Color.red));
-        g2.drawRect(screenX +solidArea.x, screenY + solidArea.y , solidArea.width,solidArea.height);
-        System.out.println("X: "+solidArea.x+"Y: "+solidArea.y);
+        // g2.setColor((Color.red));
+        // g2.drawRect(screenX +solidArea.x, screenY + solidArea.y , solidArea.width,solidArea.height);
+        // System.out.println("X: "+solidArea.x+"Y: "+solidArea.y);
         // troubleshoot collision Rectangles
     }
    
