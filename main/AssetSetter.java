@@ -1,6 +1,7 @@
 package main;
 
 import entity.NPC_OldMan;
+import entity.redGuys;
 import object.OBJ_Boots;
 import object.OBJ_Chest;
 import object.OBJ_Door;
@@ -53,5 +54,11 @@ public class AssetSetter{
         gp.npc[0] = new NPC_OldMan(gp);
         gp.npc[0].worldX = gp.tileSize*21;
         gp.npc[0].worldY = gp.tileSize*21;
+    }
+
+    public void setRedGuys(){
+        gp.npc[1] = new redGuys(gp);
+        gp.npc[1].worldX = gp.tileSize*27;
+        gp.npc[1].worldY = gp.tileSize*21;
     }
 }
