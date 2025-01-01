@@ -6,15 +6,21 @@ import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.InputStream;
-import java.text.DecimalFormat;
+//import java.text.DecimalFormat;
+
+import entity.Entity;
+import object.OBJ_Heart;
+import object.SuperObject;
 
 public class UI {
 
     GamePanel gp;
     Graphics2D g2;
     Font arial_40, arial_80B, maruMonica;
+    BufferedImage heart_full, heart_half, heart_blank;
     public boolean messageOn = false;
     public String message = "";
     int messageCounter = 0;
@@ -39,8 +45,14 @@ public class UI {
         }
 
         arial_40 = new Font("8514oem", Font.PLAIN, 52);// Font.EMTPY can change
-        arial_80B = new Font("Arial", Font.BOLD, 80);
-    }// "8514oem Regular
+        arial_80B = new Font("Arial", Font.BOLD, 80);// "8514oem Regular
+
+        // CREATE HUB OBJECT
+        SuperObject heart = new OBJ_Heart(gp);
+        heart_full = heart.image;
+        heart_half = heart.image2;
+        heart_blank = heart.image3;
+    }
 
     public void showMessage(String text) {
 
@@ -62,16 +74,61 @@ public class UI {
         }
         // PLAY STATE
         if (gp.gameState == gp.playState) {
-            // Do playState stuff later
+            drawPlayerLife();
         }
         if (gp.gameState == gp.pauseState) {
+            drawPlayerLife();
             drawPauseScreen();
         }
         // DIALOGUE STATE
         if (gp.gameState == gp.dialogueState) {
+            drawPlayerLife();
             drawDialogueScreen();
         }
+    }
 
+    public void drawPlayerLife() {
+
+        // PLAYER WILL LOST HEART (TEST DEMO)
+        if (gp.player.worldY >= 9999 ) {
+            
+            if (Entity.Counter == 60){
+                gp.player.life -= 1;
+                Entity.Counter = 0;
+            }
+            Entity.Counter += 1;
+            System.out.println(Entity.Counter);
+            
+        }
+        
+        //gp.player.life = 5;
+
+        int x = gp.tileSize / 2;
+        int y = gp.tileSize / 2;
+        int i = 0;
+
+        // DRAW BLANK HEART
+        while (i < gp.player.maxLife / 2) {
+            g2.drawImage(heart_blank, x, y, null);
+            i++;
+            x += gp.tileSize;
+        }
+
+        // RESET
+        x = gp.tileSize / 2;
+        y = gp.tileSize / 2;
+        i = 0;
+
+        // DRAW CURRENT LIFE
+        while (i < gp.player.life) {
+            g2.drawImage(heart_half, x, y, null);
+            i++;
+            if (i < gp.player.life) {
+                g2.drawImage(heart_full, x, y, null);
+            }
+            i++;
+            x += gp.tileSize;
+        }
     }
 
     public void drawTitleScreen() {
@@ -89,6 +146,8 @@ public class UI {
             // SHADOW
             g2.setColor(Color.gray);
             g2.drawString(text, x + 5, y + 5);
+            g2.setColor(Color.gray);
+            g2.drawString(text, x + 5 + 5, y + 5);
 
             // MAIN COLOR
             g2.setColor(Color.white);

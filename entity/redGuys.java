@@ -1,6 +1,6 @@
 package entity;
 
-import java.awt.Color;
+//import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -18,7 +18,7 @@ public class redGuys extends Entity {
         solidAreaDefaultY = solidArea.y;
     
         direction = "down";
-        speed = 2;
+        speed = 9;
 
         getImage();
     }
@@ -89,8 +89,8 @@ public class redGuys extends Entity {
             }
         }
         spriteCounter++;
-        if(spriteCounter > 6) { // speed Animation
-            if (spriteNum == 1) {
+        if(spriteCounter  > 5) { 
+            if (spriteNum == 1) {                                               
                 spriteNum = 2;
             } else if (spriteNum == 2) {
                 spriteNum = 3;

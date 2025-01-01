@@ -14,11 +14,12 @@ public class Entity {
     GamePanel gp;
     public int worldX, worldY;
     public int speed;
+    public static int Counter;
 
     public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
     public String direction;
 
-    public int spriteCounter = 0;
+    public int spriteCounter = -1;
     public int spriteNum = 1;
     public int solidAreaDefaultX, solidAreaDefaultY;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
@@ -26,6 +27,10 @@ public class Entity {
     public int actionLockCounter = 0;
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
+
+    // CHARACTER STATUS
+    public int maxLife;
+    public int life;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
