@@ -18,7 +18,7 @@ public class redGuys extends Entity {
         solidAreaDefaultY = solidArea.y;
     
         direction = "down";
-        speed = 9;
+        speed = 1;
 
         getImage();
     }
