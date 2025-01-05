@@ -11,7 +11,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -47,11 +46,13 @@ public class GamePanel extends JPanel implements Runnable {
 
     // ENTITY AND OBJECT
     public Player player = new Player(this, keyH);
-    public Entity obj[] = new Entity[50]; // 50 objects slots
-    public Entity npc[] = new Entity[10];
+    public Entity obj[] = new Entity[10]; // 50 objects slots
+    public Entity npc[] = new Entity[20];
+    public Entity monster[] = new Entity[20];
     ArrayList<Entity> entityList = new ArrayList<>();//all entity include: player, npc,...
     //and we dont need call draw when use SUPEROBJECT
     //Arraylist always order player,npc,... draw follow 1, 2, 3,...
+
 
     // GAME STATE (add new story :> )
     public int gameState;
@@ -74,6 +75,7 @@ public class GamePanel extends JPanel implements Runnable {
     public void setupGame() {
         aSetter.setObject();
         aSetter.setNPC();
+        aSetter.setMonster();
         //aSetter.setRedGuys();
         //playMusic(0);
         // stopMusic();
@@ -127,6 +129,11 @@ public class GamePanel extends JPanel implements Runnable {
                     npc[i].update();
                 }
             }
+            for (int i = 0; i < monster.length; i++) {
+                if(monster[i] != null){
+                    monster[i].update();
+                }
+            }
         }
         if (gameState == pauseState) {
             // nothing (we dont update anything)
@@ -166,13 +173,19 @@ public class GamePanel extends JPanel implements Runnable {
                 }
             }
 
-            // DOTY
+            for(int i = 0; i < monster.length; i++){
+                if(monster[i] != null){
+                    entityList.add(monster[i]);
+                }
+            }
+
+            // SORT
             Collections.sort(entityList, new Comparator<Entity>() {
 
                 @Override
                 public int compare(Entity e1, Entity e2) {
                     
-                    int result = Integer.compare(e1.worldX, e2.worldY);
+                    int result = Integer.compare(e1.worldY, e2.worldY);
                     return result;
                 }
                 
@@ -183,10 +196,8 @@ public class GamePanel extends JPanel implements Runnable {
                 entityList.get(i).draw(g2);
             }
 
-            // EMPTY ENTITY LIST
-            for(int i = 0; i < entityList.size(); i++){
-                entityList.remove(i);
-            }
+            // EMPTY ENTITY LIST  
+                entityList.clear();
 
 
             // UI

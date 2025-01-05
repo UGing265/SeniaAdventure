@@ -1,5 +1,7 @@
 package entity;
 
+import java.awt.Color;
+import java.awt.Font;
 //import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -44,7 +46,7 @@ public class Player extends Entity {
         direction = "down";
 
         // PLAYER STATUS
-        maxLife = 6;
+        maxLife = 16;
         life = maxLife;
     }
 
@@ -65,6 +67,18 @@ public class Player extends Entity {
 
     }
 
+    public void getPlayerAttackImage() {
+
+        attackDown1 = setup("/Seina/weapon/Layer 1_SEINA 5", gp.tileSize + 20, gp.tileSize + 20);
+        attackDown2 = setup("/Seina/weapon/Layer 1_SEINA 6", gp.tileSize + 20, gp.tileSize + 20);
+        attackUp1 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+        attackUp2 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+        attackLeft1 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+        attackLeft2 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+        attackRight1 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+        attackRight2 = setup("/Seina/weapon/Layer 1_SEINA 11", gp.tileSize + 20, gp.tileSize + 20);
+    }
+
     public void update() {
 
         // COOLDOWN 10s when use boots
@@ -74,7 +88,7 @@ public class Player extends Entity {
         }
 
         if (keyH.upPressed == true || keyH.downPressed == true
-                || keyH.leftPressed == true || keyH.rightPressed == true) {
+                || keyH.leftPressed == true || keyH.rightPressed == true || keyH.enterPressed == true) {
 
             if (keyH.upPressed == true) {
                 direction = "up";
@@ -98,12 +112,15 @@ public class Player extends Entity {
             int npcIndex = gp.cChecker.checkEntity(this, gp.npc);
             interactNPC(npcIndex);
 
+            // CHECK MONSTER COLLISION
+            int monsterIndex = gp.cChecker.checkEntity(this, gp.monster);
+            contactMoster(monsterIndex);
+
             // CHECK EVENT
             gp.eHandler.checkEvent();
-            gp.keyH.enterPressed = false;
 
             // IF COLISION IS FALSE, PLAYER CAN MOVE
-            if (collisionOn == false) {
+            if (collisionOn == false && keyH.enterPressed == false) {
                 switch (direction) {
                     case "up":
                         worldY -= speed;
@@ -119,6 +136,9 @@ public class Player extends Entity {
                         break;
                 }
             }
+
+            gp.keyH.enterPressed = false;
+
             spriteCounter++;
             if (spriteCounter > 8) { // speed Animation
                 if (spriteNum == 1) {
@@ -135,6 +155,15 @@ public class Player extends Entity {
             if (standCounter == 20) {
                 spriteNum = 2; // stop walk :)
                 standCounter = 0;
+            }
+        }
+
+        // This needs to be outside of key if statement!
+        if(invincible == true){
+            invincibleCounter++;
+            if(invincibleCounter > 60){
+                invincible = false;
+                invincibleCounter = 0;
             }
         }
     }
@@ -183,11 +212,22 @@ public class Player extends Entity {
 
     public void interactNPC(int i) {
         if (i != 999) {
-            //System.out.println("you are hitting an NPC!");
-            if(gp.keyH.enterPressed == true){
+            // System.out.println("you are hitting an NPC!");
+            if (gp.keyH.enterPressed == true) {
                 gp.gameState = gp.dialogueState;
                 gp.npc[i].speak();
-            }     
+            }
+        }
+    }
+
+    public void contactMoster(int i) {
+
+        if (i != 999) {
+
+            if (invincible == false) {
+                life -= 1;
+                invincible = true;
+            } 
         }
     }
 
@@ -249,6 +289,11 @@ public class Player extends Entity {
         // g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width,
         // solidArea.height);
         // troubleshoot collision Rectangles
+
+        // DEBUG
+        g2.setFont((new Font("Arial", Font.PLAIN, 26)));
+        g2.setColor(Color.white);
+        g2.drawString("Invincible:"+invincibleCounter, 10, 400);
     }
 }
 

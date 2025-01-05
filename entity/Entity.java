@@ -1,6 +1,5 @@
 package entity;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
@@ -14,27 +13,31 @@ import main.UtilityTool;
 public class Entity {
     GamePanel gp;
     public int worldX, worldY;
-    public int speed;
-    public static int Counter;
-
-    public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
     public String direction = "down";
-
-    public int spriteCounter = -1;
-    public int spriteNum = 1;
+    public BufferedImage up1, up2, up3, down1, down2, down3, left1, left2, left3, right1, right2, right3;
+    public BufferedImage attackUp1, attackUp2, attackDown1, attackDown2, attackLeft1, attackLeft2, attackRight1, attackRight2;
+    public BufferedImage image, image2, image3;
     public int solidAreaDefaultX, solidAreaDefaultY;
     public Rectangle solidArea = new Rectangle(0, 0, 48, 48);
     public boolean collisionOn = false;
-    public int actionLockCounter = 0;
     String dialogues[] = new String[20];
     int dialogueIndex = 0;
-    public BufferedImage image, image2, image3;
-    public String name;
     public boolean collision = false;
+    public int type; // 0 = player, 1 = npc, 2 = monster
 
-    // CHARACTER STATUS
+    // COUNTER
+    public int actionLockCounter = 0;
+    public int spriteCounter = 0;
+    public int spriteNum = 1;
+    public static int Counter;
+    public boolean invincible = false; 
+    public int invincibleCounter;
+
+    // CHARACTER ATTIBUTES
+    public String name;
     public int maxLife;
     public int life;
+    public int speed;
 
     public Entity(GamePanel gp) {
         this.gp = gp;
@@ -70,7 +73,17 @@ public class Entity {
         collisionOn = false;
         gp.cChecker.checkTile(this);
         gp.cChecker.checkObject(this, false);
-        gp.cChecker.checkPlayer(this);
+        gp.cChecker.checkEntity(this, gp.npc);
+        gp.cChecker.checkEntity(this, gp.monster);//check monster and npc interfact with each
+        boolean contactPlayer = gp.cChecker.checkPlayer(this);
+
+        if(this.type == 2 && contactPlayer == true){
+            if(gp.player.invincible == false){
+                // give damage
+                gp.player.life -= 1;
+                gp.player.invincible = true;
+            }
+        }
 
         // IF COLISION IS FALSE, PLAYER CAN MOVE
         if (collisionOn == false) {
@@ -147,8 +160,8 @@ public class Entity {
 
             }
             g2.drawImage(image, screenX, screenY, null);
-             g2.setColor((Color.red));
-             g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width,solidArea.height);
+            //  g2.setColor((Color.red));
+            //  g2.drawRect(screenX +solidArea.x,screenY + solidArea.y , solidArea.width,solidArea.height);
             // troubleshoot collision Rectangles
         } // NOT WHOLE MAP
 
